@@ -1,0 +1,83 @@
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#define TRIGGER 14
+#define ECHO    12
+int A;
+float x2;
+#define OLED_RESET LED_BUILTIN
+Adafruit_SSD1306 display(OLED_RESET);
+
+
+
+
+
+void setup()   {                
+  Serial.begin(9600);
+  pinMode(TRIGGER, OUTPUT);
+  pinMode(ECHO, INPUT);
+  pinMode(BUILTIN_LED, OUTPUT);
+
+  // by default, we'll generate the high voltage from the 3.3v line internally! (neat!)
+  display.begin(SSD1306_SWITCHCAPVCC , 0x3C); 
+
+
+ void loop() {
+  long duration, distance;
+  digitalWrite(TRIGGER, LOW);  
+  delayMicroseconds(2); 
+  
+  digitalWrite(TRIGGER, HIGH);
+  delayMicroseconds(10); 
+  
+  digitalWrite(TRIGGER, LOW);
+  duration = pulseIn(ECHO, HIGH);
+  distance = (duration/2) / 29.1;
+  
+  A=(map (distance ,0,50,0,16));
+  Serial.print(A);
+  Serial.println("%");
+  delay(2000);
+  display.clearDisplay();
+
+    // draw rectangles
+  testdrawrect();
+ 
+
+
+  // draw multiple rectangles
+  testfillrect();
+ 
+
+
+  display.setTextSize(1);
+  display.setTextColor(WHITE);
+  display.setCursor(35,0);
+  display.println("DUST BIN");
+ 
+  display.setCursor(0,15);
+  display.setTextSize(2);
+  display.setTextColor(WHITE);
+  display.print("CHIP2CLOUD"); 
+  display.display();
+  //delay(1000);
+  
+
+  
+}
+
+
+void testdrawrect(void) {
+ 
+    display.drawRect(100,0,22,7, WHITE);
+   
+  }
+
+
+  void testfillrect(void) {
+  
+    display.fillRect(100,0,A,7,WHITE);
+   
+  
+}
